@@ -43,6 +43,11 @@ class SharedNDArray:
         self._buf = mmap.mmap(self._shm.fd, size)
         self.array = np.ndarray(shape, dtype, self._buf, order='C')
 
+    def flush(self):
+        # Why is this necessary, if at all?!?
+        self._buf.seek(0)
+        self._buf.write(self.array.tobytes())
+
     @classmethod
     def copy(cls, arr):
         """Creates a new SharedNDArray that is a copy of the given ndarray.
